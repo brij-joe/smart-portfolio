@@ -2,6 +2,7 @@ import logging
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -68,3 +69,35 @@ class ModelTrainer:
         plt.plot(dates, predicted, label="Predicted")
         plt.legend()
         plt.show()
+
+    def forecast_future(self, last_sequence, n_steps):
+        """
+        last_sequence: shape (look_back, features)
+        n_steps: number of future days to predict
+        """
+        predictions = []
+        current_input = last_sequence.copy()
+
+        for _ in range(n_steps):
+            # reshape for model
+            x_input = current_input.reshape(1, current_input.shape[0], current_input.shape[1])
+
+            # predict next value
+            yhat = self.model.predict(x_input, verbose = 0)
+
+            # store prediction
+            predictions.append(yhat[0][0])
+
+            # create next input row
+            next_row = current_input[-1].copy()
+
+            # update ONLY target column (stock price)
+            TARGET_COL = 0
+            next_row[TARGET_COL] = yhat[0][0]
+
+            # shift window
+            current_input = np.vstack((current_input[1:], next_row))
+
+        # inverse scaling
+        predictions = np.array(predictions)
+        return predictions
