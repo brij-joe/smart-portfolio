@@ -46,7 +46,7 @@ def main():
     )
 
     index = DataProvider.get_index_data(
-        config.index_list,
+        config.index_name,
         config.train_start_date,
         config.train_end_date,
         config.cache_data,

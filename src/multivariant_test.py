@@ -17,7 +17,7 @@ def main():
 
     cfg = ModelConfig(
         stock_name="HDFCBANK.NS",
-        index_list=['GC=F', 'CL=F', '^BSESN', '^GSPC', '^TNX', '^FTSE'],
+        index_name =['GC=F', 'CL=F', '^BSESN', '^GSPC', '^TNX', '^FTSE'],
         train_start_date="2020-01-01",
         train_end_date="2026-03-18",
         model_name = "cnn_lstm_model",
@@ -37,7 +37,7 @@ def main():
     )
 
     index = DataProvider.get_index_data(
-        cfg.index_list,
+        cfg.index_name,
         cfg.train_start_date,
         cfg.train_end_date,
         cfg.cache_data,
