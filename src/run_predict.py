@@ -57,8 +57,8 @@ def main():
     df = DataProcessor.merge_data(stock, index)
     train_df, test_df = DataProcessor.split_data(df, config.pct_train)
     train, test, min_val, max_val = DataProcessor.normalize(train_df.values, test_df.values)
-    trainX, trainY = DataProcessor.create_dataset(train, config.look_back, config.features)
-    testX, testY = DataProcessor.create_dataset(test, config.look_back, config.features)
+    trainX, trainY = DataProcessor.create_dataset(train, config.timesteps, config.num_feature)
+    testX, testY = DataProcessor.create_dataset(test, config.timesteps, config.num_feature)
 
     print(trainX.shape, trainY.shape)
 

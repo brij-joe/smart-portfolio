@@ -1,36 +1,39 @@
+import logging
 import numpy as np
 import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
 
+logger = logging.getLogger(__name__)
 
 
 class DataProcessor:
 
-    @staticmethod
-    def merge_data(stock, index):
-        df = pd.concat([stock['Close'], index['Close']], axis=1)
-        df = df.where(lambda x: x > 0).dropna()
-        df = df.interpolate(method="time")
+    def __init__(self):
+        self.scaler = MinMaxScaler()
+
+    def merge(self, stock_df, index_df):
+        df = pd.concat([stock_df['Close'], index_df['Close']], axis=1)
+        df = df.dropna()
         return df
 
-    @staticmethod
-    def split_data(df: pd.DataFrame, pct: float):
-        n = int(len(df) * pct)
-        return df.iloc[:n], df.iloc[n:]
+    def scale(self, train_df, test_df):
+        self.scaler.fit(train_df)
 
-    @staticmethod
-    def normalize(train, test):
-        min_val = train.min()
-        max_val = train.max()
+        train_scaled = self.scaler.transform(train_df)
+        test_scaled = self.scaler.transform(test_df)
 
-        train_norm = (train - min_val) / (max_val - min_val)
-        test_norm = (test - min_val) / (max_val - min_val)
+        return train_scaled, test_scaled
 
-        return train_norm, test_norm, min_val, max_val
-
-    @staticmethod
-    def create_dataset(dataset, look_back, features):
+    def create_sequences(self, data, timesteps):
         X, y = [], []
-        for i in range(len(dataset) - look_back - 1):
-            X.append(dataset[i:i + look_back])
-            y.append(dataset[i + look_back, -features])
+
+        for i in range(timesteps, len(data)):
+            X.append(data[i - timesteps:i])
+            y.append(data[i, 0])  # target = stock price
+
         return np.array(X), np.array(y)
+
+    def inverse_transform(self, values):
+        dummy = np.zeros((len(values), self.scaler.n_features_in_))
+        dummy[:, 0] = values
+        return self.scaler.inverse_transform(dummy)[:, 0]

@@ -38,7 +38,7 @@ In this implementation, the model is trained using **seven input features**, com
 ├── cache/                    # Cached datasets
 ├── models/                   # Saved models
 │
-├── run_train_test.py         # Entry point
+├── univariant_test.py        # Entry point, build, train and test the LSTM model
 ├── run_predict.py            # Future price prediction
 └── README.md
 ```
@@ -83,7 +83,7 @@ pip install -r requirements.txt
 Run the main program:
 
 ```bash
-python run_train_test.py
+python multivariant_test.py
 ```
 
 ---
