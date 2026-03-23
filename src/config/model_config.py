@@ -8,9 +8,9 @@ class ModelConfig:
     stock_name: str | List[str] | None
     index_name: str | List[str] | None
     model_name: str | None
-    train_start_date: str
-    train_end_date: str
-    root_path: str
+    start: str
+    end: str
+    storage_root_path: str
 
     timesteps: int = 60
     num_features: int = 7
@@ -37,7 +37,7 @@ class ModelConfig:
     model_path: Path = field(init=False)
 
     def __post_init__(self):
-        root = Path(self.root_path)
+        root = Path(self.storage_root_path)
         data_dir = root / "data"
         data_dir.mkdir(parents=True, exist_ok=True)
         model_dir = root / "model"

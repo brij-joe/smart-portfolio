@@ -42,12 +42,12 @@ def main():
         stock_name = "STOCK_PORTFOLIO",
         index_name = ["^NSEI"],
         model_name = None,
-        train_start_date = start_date,
-        train_end_date = end_date,
+        start = start_date,
+        end = end_date,
         timesteps = 30,
         num_features = 1,
         pct_train = 0.7,
-        root_path = os.environ.get("ROOT_PATH"),
+        storage_root_path = os.environ.get("ROOT_PATH"),
     )
 
     tickers = [
@@ -71,9 +71,10 @@ def main():
 
     logger.info("Fetching portfolio data...")
     df = DataProvider.get_close_price_data(
-        tickers, ticker_names,
-        cfg.train_start_date,
-        cfg.train_end_date,
+        tickers,
+        ticker_names,
+        cfg.start,
+        cfg.end,
         cfg.cache_data,
         cfg.stock_data_path,
     )

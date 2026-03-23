@@ -29,17 +29,40 @@ def plot_barh(series, title, xlabel):
 def main():
     load_dotenv()
     tickers = [
-        '0P0000PTGR.BO', '0P00005VCH.BO', '0P00005WL6.BO', '0P0000KPO1.BO',
-        '0P0000GB48.BO', '0P00005WLX.BO', '0P00005X22.BO', '0P00005UP8.BO',
-        '0P00005VC9.BO', '0P00009JAQ.BO', '0P00005WNE.BO', '^BSESN'
+        'ICICIBANK.BO',
+        'IDFCFIRSTB.BO',
+        'JIOFIN.BO',
+        'PPLPHARMA.BO',
+        'POLYCAB.BO',
+        'SAGCEM.BO',
+        'SAILIFE.BO',
+        'TMCV.BO',
+        'TATASTEEL.BO',
+        '0P0000PTGR.BO',
+        '0P00005VCH.BO',
+        '0P00005WLX.BO',
+        '0P0000GB48.BO',
+        '0P000093TC.BO',
+        '0P00005VC5.BO'
+        '^BSESN'
     ]
 
     names = [
-        'Nippon_Small_Cap_G', 'Quant_Mid_Cap_G', 'UTI_Nifty50_Index_G',
-        'ICICI_Pru_Corp_Bond_G', 'ICICI_Pru_Bluechip_Growth',
-        'HDFC_Focused30_Growth', 'ABSL_Dynamic_Bond_Fund',
-        'Nippon_Mid_Cap_G', 'Quant_Small_Cap_G',
-        'Nippon_Large_Cap_G', 'HDFC_Top100_G', 'BSE_Sensex'
+        'ICICI Bank',
+        'IDFC First Bank',
+        'Jio Finance',
+        'Piramal Pharma',
+        'Poly Cab',
+        'Sagar Cement',
+        'Sai Life',
+        'Tata Motors Commercial Vehicle',
+        'Tata Steel',
+        'Nippon_Small_Cap_G',
+        'Quant_Mid_Cap_G',
+        'HDFC Focused Fund',
+        'ICICI Pru Large Cap'
+        'Invesco Mid Cap',
+        'BSE_Sensex'
     ]
 
     start_date = "2022-04-01"
@@ -51,18 +74,18 @@ def main():
         stock_name = "STOCK_PORTFOLIO",
         index_name = ["^BSESN"],
         model_name = None,
-        train_start_date = start_date,
-        train_end_date = end_date,
+        start = start_date,
+        end = end_date,
         timesteps = 30,
         num_features = 1,
         pct_train = 0.7,
-        root_path = os.environ.get("ROOT_PATH")
+        storage_root_path = os.environ.get("ROOT_PATH")
     )
 
     # ==========================
     # Load Data
     # ==========================
-    df = DataProvider.fetch_mf_nav(tickers, names, cfg.train_start_date, cfg.train_end_date, cfg.cache_data, cfg.stock_data_path)
+    df = DataProvider.fetch_mf_nav(tickers, names, cfg.start, cfg.end, cfg.cache_data, cfg.stock_data_path)
 
     # Remove benchmark
     df_assets = df.drop("BSE_Sensex", axis=1)
@@ -71,25 +94,29 @@ def main():
     # Sector Constraints
     # ==========================
     sector_mapper = {
-        'Nippon_Small_Cap_G': 'small_cap',
-        'Quant_Mid_Cap_G': 'mid_cap',
-        'UTI_Nifty50_Index_G': 'large_cap',
-        'ICICI_Pru_Corp_Bond_G': 'debt',
-        'ICICI_Pru_Bluechip_Growth': 'large_cap',
-        'HDFC_Focused30_Growth': 'large_cap',
-        'ABSL_Dynamic_Bond_Fund': 'debt',
-        'Nippon_Mid_Cap_G': 'mid_cap',
-        'Quant_Small_Cap_G': 'small_cap',
-        'Nippon_Large_Cap_G': 'large_cap',
-        'HDFC_Top100_G': 'large_cap',
+        'ICICI Bank': 'large_cap',
+        'IDFC First Bank': 'mid_cap',
+        'Jio Finance': 'large_cap',
+        'Piramal Pharma': 'small_cap',
+        'Poly Cab': 'large_cap',
+        'Sagar Cement': 'small_cap',
+        'Sai Life': 'small_cap',
+        'TMCV': 'large_cap',
+        'Tata Steel': 'large_cap',
+        'Nippon Small Cap': 'small_cap',
+        'Quant Mid Cap': 'mid_cap',
+        'HDFC Focused Fund': 'large_cap',
+        'ICICI Pru Large Cap': 'large_cap',
+        'Invesco Mid Cap': 'mid_cap',
+        'BSE_Sensex': 'Index'
     }
 
     sector_lower = {}  # optional
     sector_upper = {
         "large_cap": 0.4,
         "mid_cap": 0.3,
-        "small_cap": 0.2,
-        "debt": 0.1,
+        "small_cap": 0.3,
+        "debt": 0,
     }
 
     # ==========================

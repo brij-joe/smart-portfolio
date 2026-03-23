@@ -36,13 +36,13 @@ def main():
     cfg = ModelConfig(
         stock_name="HDFCBANK.NS",
         index_name =["^NSEI"],
-        train_start_date="2020-01-01",
-        train_end_date="2026-03-18",
+        start = "2020-01-01",
+        end = "2026-03-18",
         model_name="lstm_model",
         timesteps=30,
         num_features=2,
         pct_train=0.7,
-        root_path=os.environ.get("ROOT_PATH")
+        storage_root_path =os.environ.get("ROOT_PATH")
     )
 
     model = load_cached_model(cfg.model_path)
@@ -50,16 +50,16 @@ def main():
     # Data loading
     stock = DataProvider.get_stock_data(
         cfg.stock_name,
-        cfg.train_start_date,
-        cfg.train_end_date,
+        cfg.start,
+        cfg.end,
         cfg.cache_data,
         cfg.stock_data_path
     )
 
     index = DataProvider.get_index_data(
         cfg.index_name,
-        cfg.train_start_date,
-        cfg.train_end_date,
+        cfg.start,
+        cfg.end,
         cfg.cache_data,
         cfg.index_data_path
     )

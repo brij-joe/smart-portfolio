@@ -3,6 +3,7 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
+from keras.src.callbacks import EarlyStopping
 
 logger = logging.getLogger(__name__)
 
@@ -34,13 +35,15 @@ class ModelTrainer:
             return None
 
         logger.info("Training model...")
+        callbacks = [EarlyStopping(monitor='val_loss', mode='min', patience=7, verbose=1)]
         history = self.model.fit(
             X_train,
             y_train,
             validation_data = (X_val, y_val),
             epochs = self.cfg.epochs,
             batch_size = self.cfg.batch_size,
-            shuffle = False
+            shuffle = False,
+            callbacks = callbacks
         )
         return history
 
